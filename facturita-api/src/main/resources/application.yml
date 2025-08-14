@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: LOCAL # o prod en producción
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  jpa:
+    open-in-view: false
+  main:
+    banner-mode: "console"
+
+server:
+  port: 8080
