@@ -8,6 +8,7 @@ import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Entidad JPA que representa la configuración global y por tenant del sistema Facturita.
@@ -57,38 +58,26 @@ public class Configuracion implements Serializable {
     /**
      * Indica si el acceso de administrador está bloqueado para el tenant.
      */
-    @Column(name = "locked_admin", nullable = false)
+    @Column(name = "admin_bloqueado", nullable = false)
     private Boolean adminBloqueado;
 
     /**
      * Ruta o contenido del certificado digital utilizado para la firma de documentos.
      */
-    @Column(name = "certificate", length = 255)
+    @Column(name = "certificado", length = 255)
     private String certificado;
 
     /**
      * Identificador del tipo de envío SOAP (por ejemplo, "01" para producción).
      */
-    @Column(name = "soap_send_id", length = 2)
+    @Column(name = "envio_soap_id", length = 2)
     private String envioSoapId;
-
-    /**
-     * Fecha de creación del registro de configuración.
-     */
-    @Column(name = "created_at")
-    private java.sql.Timestamp fechaCreacion;
-
-    /**
-     * Fecha de última actualización del registro de configuración.
-     */
-    @Column(name = "updated_at")
-    private java.sql.Timestamp fechaActualizacion;
 
     /**
      * Identificador del tipo de servicio SOAP (por ejemplo, "01" para SUNAT).
      */
-    @Column(name = "soap_type_id", length = 2)
-    private String soapTypeId;
+    @Column(name = "tipo_soap_id", length = 2)
+    private String tipoSoapId;
 
     /**
      * Usuario para autenticación en el servicio SOAP.
@@ -150,14 +139,27 @@ public class Configuracion implements Serializable {
     /**
      * Indica si está habilitada la integración con WhatsApp para notificaciones.
      */
-    @Column(name = "enable_whatsapp")
-    private Boolean habilitarWhatsapp;
+    @Column(name = "whatsapp_habilitado")
+    private Boolean whatsappHabilitado;
 
     /**
      * Indica si se debe aplicar validación regex a la contraseña del cliente.
      */
-    @Column(name = "regex_password_client", nullable = false)
-    private Boolean regexPasswordClient;
+    @Column(name = "regex_password_cliente", nullable = false)
+    private Boolean regexPasswordCliente;
+
+    /**
+     * Fecha de creación del registro de configuración.
+     */
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    /**
+     * Fecha de última actualización del registro de configuración.
+     */
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
+
 
     // @Column(name = "tenant_show_ads", nullable = false)
     // private Boolean tenantShowAds;
@@ -171,7 +173,7 @@ public class Configuracion implements Serializable {
      */
     @PreUpdate
     public void preUpdate() {
-        fechaActualizacion = new java.sql.Timestamp(System.currentTimeMillis());
+        fechaActualizacion = LocalDateTime.now();
         LoggerFactory.getLogger(Configuracion.class)
             .info("[AUDIT] Actualizando Configuracion: id={}, fechaActualizacion={}", id, fechaActualizacion);
     }

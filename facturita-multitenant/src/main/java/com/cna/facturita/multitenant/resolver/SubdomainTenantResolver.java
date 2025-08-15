@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class SubdomainTenantResolver {
     
     private static final String DEFAULT_TENANT = "admin";
-    private static final String PRODUCTION_DOMAIN = "facturita.com";
+    private static final String PRODUCTION_DOMAIN = "facturitapro.com";
     private static final String DEV_DOMAIN = "localhost";
     
     // Patrón para validar nombres de tenant (solo letras, números y guiones)
@@ -88,12 +88,10 @@ public class SubdomainTenantResolver {
         if (!StringUtils.hasText(tenant)) {
             return false;
         }
-        
         // Validar longitud
         if (tenant.length() < 2 || tenant.length() > 50) {
             return false;
         }
-        
         // Validar patrón
         return TENANT_PATTERN.matcher(tenant).matches();
     }

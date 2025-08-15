@@ -32,7 +32,8 @@ import java.util.List;
  * - Registra el filtro personalizado JwtAuthenticationFilter.
  * - Configura el AuthenticationManager basado en Spring Security moderno.
  * 
- * NOTA: Usa las nuevas prácticas de Spring Security 6.1+ (sin clases deprecadas).
+ * NOTA: Usa las nuevas prácticas de Spring Security 6.1+ (sin clases
+ * deprecadas).
  */
 @Slf4j
 @Configuration
@@ -41,14 +42,15 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-    
+
     /**
      * Define el filtro principal de seguridad HTTP.
      *
      * - Deshabilita CSRF (no necesario con JWT).
      * - Define rutas públicas: Swagger y /login.
      * - Todo lo demás requiere autenticación JWT.
-     * - Aplica el filtro JwtAuthenticationFilter antes de UsernamePasswordAuthenticationFilter.
+     * - Aplica el filtro JwtAuthenticationFilter antes de
+     * UsernamePasswordAuthenticationFilter.
      */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,39 +59,40 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                		.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     DaoAuthenticationProvider daoAuthenticationProvider(CustomUserDetailsService userDetailsService,
-                                                                PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder) {
         var provider = new DaoAuthenticationProvider(userDetailsService);
         log.info("Instanciando DaoAuthenticationProvider con BCryptPasswordEncoder...");
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
-    
     /**
      * Expone el AuthenticationManager.
      *
-     * Este manager será usado para autenticar credenciales con nuestro CustomUserDetailsService.
+     * Este manager será usado para autenticar credenciales con nuestro
+     * CustomUserDetailsService.
      */
     @Bean
     AuthenticationManager authenticationManager(DaoAuthenticationProvider daoAuthenticationProvider) throws Exception {
-    	return new ProviderManager(daoAuthenticationProvider);
+        return new ProviderManager(daoAuthenticationProvider);
     }
 
     /**
      * Define el algoritmo de cifrado de contraseñas.
      *
-     * Se utiliza BCrypt, una opción fuerte y probada contra ataques de fuerza bruta.
+     * Se utiliza BCrypt, una opción fuerte y probada contra ataques de fuerza
+     * bruta.
      */
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -102,30 +105,33 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Permitir orígenes específicos (puedes agregar más según necesites)
-        configuration.setAllowedOrigins(List.of(
+        configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:4200",
-                "http://localhost:3000", 
+                "http://localhost:3000",
                 "http://127.0.0.1:4200",
-                "http://127.0.0.1:3000"
-        ));
-        
+                "http://127.0.0.1:3000",
+                "http://*.localhost:4200",
+                "http://*.localhost:3000",
+                "http://*.127.0.0.1:4200",
+                "http://*.127.0.0.1:3000"));
+
         // Permitir todos los métodos HTTP
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        
+
         // Permitir todos los headers
         configuration.setAllowedHeaders(List.of("*"));
-        
+
         // Permitir credenciales (cookies, headers de autorización)
         configuration.setAllowCredentials(true);
-        
+
         // Tiempo de cache para preflight requests
         configuration.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 }

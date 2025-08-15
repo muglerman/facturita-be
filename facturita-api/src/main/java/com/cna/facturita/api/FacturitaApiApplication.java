@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = {"com.cna.facturita"})
+@SpringBootApplication(scanBasePackages = { "com.cna.facturita" })
 @EnableJpaRepositories(basePackages = "com.cna.facturita.core.repository")
 @EntityScan(basePackages = "com.cna.facturita.core.model")
 public class FacturitaApiApplication {

@@ -31,3 +31,66 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+CREATE TABLE `clientes` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tipo_documento_identidad_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL unique,
+  `numero` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre_comercial` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pais_id` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nacionalidad_id` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `departamento_id` char(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `provincia_id` char(4) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `distrito_id` char(6) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `direccion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estado` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` unique varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telefono` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `observacion` longtext COLLATE utf8mb4_unicode_ci COMMENT 'Observaciones',
+  `status` boolean NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+
+
+//distritos
+CREATE TABLE `distritos` (
+  `id` char(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `provincia_id` char(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` boolean NOT NULL DEFAULT '1',
+  KEY `distritos_provincia_id_foreign` (`provincia_id`),
+  CONSTRAINT `distritos_provincia_id_foreign` FOREIGN KEY (`provincia_id`) REFERENCES `provincias` (`id`)
+  )
+
+  CREATE TABLE `departamentos` (
+  `id` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` boolean NOT NULL DEFAULT '1',
+  KEY `departamento_id_index` (`id`)
+)
+
+CREATE TABLE `paises` (
+  `id` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` boolean NOT NULL DEFAULT '1'
+  )
+
+CREATE TABLE `tipo_documento_identidad` (
+  `id` char(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` boolean NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  KEY `cat_identity_document_types_id_index` (`id`)
+  )
+
+CREATE TABLE `provincias` (
+  `id` char(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `departamento_id` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  KEY `provincias_departamento_id_foreign` (`departamento_id`),
+  KEY `provincias_id_index` (`id`),
+  CONSTRAINT `provincias_departamento_id_foreign` FOREIGN KEY (`departamento_id`) REFERENCES `departamentos` (`id`)
+) 
+
+

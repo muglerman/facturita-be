@@ -1,9 +1,9 @@
 spring:
   profiles:
-    active: LOCAL # o prod en producción
+    active: LOCAL # o prod en producción multitenant
   jackson:
     serialization:
-      INDENT_OUTPUT: true
+      indent-output: true
   jpa:
     open-in-view: false
   main:

@@ -2,7 +2,7 @@ package com.cna.facturita.api.controller;
 
 import com.cna.facturita.api.exception.AuthenticationException;
 import com.cna.facturita.api.service.AuthService;
-import com.cna.facturita.dto.form.auth.UsuarioForm;
+import com.cna.facturita.dto.form.UsuarioForm;
 import com.cna.facturita.dto.request.auth.LoginRequest;
 import com.cna.facturita.dto.response.auth.LoginResponse;
 import com.cna.facturita.core.model.Usuario;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000", "http://127.0.0.1:4200"})
+@CrossOrigin(origins = { "http://*.localhost:4200", "http://*.localhost:3000", "http://*.127.0.0.1:4200" })
 public class AuthController {
 
     private final AuthService authService;
@@ -32,8 +32,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-    	log.info("[AuthController] -> [login] Ejecutando login...");
-    	try {
+        log.info("[AuthController] -> [login] Ejecutando login...");
+        try {
             LoginResponse response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
@@ -60,7 +60,7 @@ public class AuthController {
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@Valid @RequestBody UsuarioForm form) {
         log.info("[AuthController] -> [registro] Registrando nuevo usuario: {}", form.getEmail());
-        
+
         // Verificar si el email ya existe
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(form.getEmail());
         if (usuarioExistente.isPresent()) {
@@ -72,12 +72,12 @@ public class AuthController {
         // Crear nuevo usuario
         Usuario usuario = new Usuario();
         form.applyTo(usuario);
-        
+
         // Encriptar la contraseña
         usuario.setPassword(passwordEncoder.encode(form.getPassword()));
-        
+
         usuarioRepository.save(usuario);
-        
+
         log.info("[AuthController] -> [registro] Usuario registrado exitosamente: {}", usuario.getEmail());
         return ResponseEntity.ok(new MensajeResponse(true, "Usuario registrado con éxito"));
     }
@@ -94,6 +94,9 @@ public class AuthController {
     }
 
     // DTOs de respuesta
-    record MensajeResponse(boolean success, String message) {}
-    record TieneUsuariosResponse(boolean tieneUsuarios) {}
+    record MensajeResponse(boolean success, String message) {
+    }
+
+    record TieneUsuariosResponse(boolean tieneUsuarios) {
+    }
 }

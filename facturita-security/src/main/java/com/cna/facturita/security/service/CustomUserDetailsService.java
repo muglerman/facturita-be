@@ -18,14 +18,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    	log.info("[CustomUserDetailsService] -> [loadUserByUsername] ejecutando...");
-        log.info("[CustomUserDetailsService] -> [loadUserByUsername] Buscando usuario por correo: {}", email);
+    	log.debug("[CustomUserDetailsService] -> [loadUserByUsername] ejecutando...");
+        log.debug("[CustomUserDetailsService] -> [loadUserByUsername] Buscando usuario por correo: {}", email);
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                	log.error("[CustomUserDetailsService] -> [loadUserByUsername] ❌ Usuario no encontrado: {}", email);
+                	log.debug("[CustomUserDetailsService] -> [loadUserByUsername] ❌ Usuario no encontrado: {}", email);
                 	return new UsernameNotFoundException("Usuario no encontrado: " + email);
                 			});
-        log.info("[CustomUserDetailsService] -> [loadUserByUsername] ✅ Usuario encontrado usuario: {}", usuario);
+        log.debug("[CustomUserDetailsService] -> [loadUserByUsername] ✅ Usuario encontrado usuario: {}", usuario);
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getPassword())

@@ -1,0 +1,57 @@
+{"properties": [
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secret'"
+  },
+  {
+    "name": "jwt.expiration",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.expiration'"
+  },
+  {
+    "name": "facturita.data",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.data'"
+  },
+  {
+    "name": "facturita.cors.allowed-origin-patterns",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.cors.allowed-origin-patterns'"
+  },
+  {
+    "name": "facturita.multitenant.default-tenant",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.multitenant.default-tenant'"
+  },
+  {
+    "name": "facturita.multitenant.strategy",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.multitenant.strategy'"
+  },
+  {
+    "name": "facturita.multitenant.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.multitenant.enabled'"
+  },
+  {
+    "name": "facturita.admin",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.admin'"
+  },
+  {
+    "name": "facturita.demo",
+    "type": "java.lang.String",
+    "description": "A description for 'facturita.demo'"
+  },
+  {
+    "name": "spring.devtools.livereload.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.devtools.livereload.enabled'"
+  },
+  {
+    "name": "spring.devtools.restart.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.devtools.restart.enabled'"
+  }
+]}

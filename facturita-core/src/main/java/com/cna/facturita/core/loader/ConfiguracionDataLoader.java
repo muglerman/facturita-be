@@ -2,6 +2,9 @@ package com.cna.facturita.core.loader;
 
 import com.cna.facturita.core.model.Configuracion;
 import com.cna.facturita.core.repository.ConfiguracionRepository;
+
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -44,33 +47,33 @@ public class ConfiguracionDataLoader implements CommandLineRunner {
         log.info("Creando configuraciones de demostración...");
 
         Configuracion config1 = new Configuracion();
-        config1.setAdminBloqueado(false);
-        config1.setCertificado("certificado-demo");
-        config1.setEnvioSoapId("01");
-        config1.setSoapTypeId("01");
-        config1.setSoapUsername("usuario-demo");
-        config1.setSoapPassword("password-demo");
-        config1.setSoapUrl("https://soap.demo.com");
-        config1.setTokenPublicCulqui("token-publico-demo");
-        config1.setTokenPrivateCulqui("token-privado-demo");
-        config1.setUrlApiRuc("https://apiruc.demo.com");
-        config1.setTokenApiRuc("token-apiruc-demo");
+        config1.setId(1);
+        config1.setAdminBloqueado(false); // locked_admin = 0
+        config1.setCertificado(null); // certificate
+        config1.setEnvioSoapId("01"); // soap_send_id
+        config1.setFechaCreacion(LocalDateTime.now());
+        config1.setFechaActualizacion(LocalDateTime.now());
+        config1.setTipoSoapId("01");
+        config1.setSoapUsername(null);
+        config1.setSoapPassword(null);
+        config1.setSoapUrl(null);
+        config1.setTokenPublicCulqui(null);
+        config1.setTokenPrivateCulqui(null);
+        config1.setUrlApiRuc("https://apiperu.dev");
+        config1.setTokenApiRuc("4b297f3cf07f893870d7d3db9b22e10ea47a8340e2bef32a3b8ca94153ae5a1c");
         config1.setUseLoginGlobal(false);
-        config1.setLogin("login-demo");
-        // config1.setApkUrl("https://apk.demo.com"); // Si existe en el modelo
-        config1.setHabilitarWhatsapp(true);
-        config1.setRegexPasswordClient(false);
-        // config1.setTenantShowAds(false); // Si existe en el modelo
-        // config1.setTenantImageAds("https://img.demo.com/ads.png"); // Si existe en el
-        // modelo
+        config1.setLogin("{\\\"type\\\":\\\"image\\\",\\\"image\\\":\\\"http:\\/\\/localhost\\/images\\/login-v2.svg\\\",\\\"position_form\\\":\\\"right\\\",\\\"show_logo_in_form\\\":false,\\\"position_logo\\\":\\\"top-left\\\",\\\"show_socials\\\":false}");
+        config1.setWhatsappHabilitado(true); // enable_whatsapp = 1
+        config1.setRegexPasswordCliente(null);
+        // El campo 'certificate' y otros nulos se dejan como null
 
         try {
             Configuracion savedConfig = configuracionRepository.save(config1);
-            log.info("✓ Configuración creada: id={}, adminBloqueado={}, envioSoapId={}, habilitarWhatsapp={}",
+            log.info("✓ Configuración creada: id={}, adminBloqueado={}, envioSoapId={}, whatsappHabilitado={}",
                     savedConfig.getId(),
                     savedConfig.getAdminBloqueado(),
                     savedConfig.getEnvioSoapId(),
-                    savedConfig.getHabilitarWhatsapp());
+                    savedConfig.getWhatsappHabilitado());
         } catch (Exception e) {
             log.error("Error al crear configuración id {}: {}", config1.getId(), e.getMessage());
         }

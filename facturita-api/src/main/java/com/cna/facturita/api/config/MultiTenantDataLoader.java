@@ -6,10 +6,8 @@ import com.cna.facturita.core.repository.UsuarioRepository;
 // import com.cna.facturita.core.repository.EmpresaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
@@ -17,27 +15,17 @@ import java.time.LocalDateTime;
  * Carga datos iniciales específicos para multitenant.
  * Se ejecuta después del DataLoader básico.
  */
+@Service
 @Slf4j
-@Component  // Habilitamos de nuevo después de solucionar el problema del esquema
 @RequiredArgsConstructor
-@Order(2) // Se ejecuta después del DataLoader básico
-public class MultiTenantDataLoader implements CommandLineRunner {
+public class MultiTenantDataLoader {
 
     private final UsuarioRepository usuarioRepository;
     // Comentamos temporalmente EmpresaRepository para evitar problemas de dependencias
     // private final EmpresaRepository empresaRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void run(String... args) throws Exception {
-        log.info("[MultiTenantDataLoader] Iniciando carga de datos multitenant...");
-        
-        // Comentamos temporalmente hasta tener el EmpresaRepository funcionando
-        // crearEmpresasDemostracion();
-        crearUsuariosPorTenant();
-        
-        log.info("[MultiTenantDataLoader] Carga de datos multitenant completada.");
-    }
+    
 
     /**
      * Crea empresas de demostración para testing multitenant
@@ -81,7 +69,7 @@ public class MultiTenantDataLoader implements CommandLineRunner {
     /**
      * Crea usuarios específicos para cada tenant/empresa
      */
-    private void crearUsuariosPorTenant() {
+    private void cargarDatosDemo() {
         // Solo crear si no hay usuarios tenant específicos
         long usuariosExistentes = usuarioRepository.count();
         if (usuariosExistentes > 1) { // Más que solo el admin
@@ -91,38 +79,37 @@ public class MultiTenantDataLoader implements CommandLineRunner {
 
         log.info("[MultiTenantDataLoader] Creando usuarios por tenant...");
 
-        // Usuario para Tech Solutions
-        Usuario usuarioTech = new Usuario();
-        usuarioTech.setNombre("Gerente Tech Solutions");
-        usuarioTech.setEmail("gerente@techsolutions.com");
-        usuarioTech.setPassword(passwordEncoder.encode("tech123"));
-        usuarioTech.setFechaVerificacionCorreo(LocalDateTime.now());
+        // Usuario para Demo Enterprise
+        Usuario usuarioGerente = new Usuario();
+        usuarioGerente.setNombre("Gerente Demo  Enterprise");
+        usuarioGerente.setEmail("gerente@demo.com");
+        usuarioGerente.setPassword(passwordEncoder.encode("demo123"));
+        usuarioGerente.setFechaVerificacionCorreo(LocalDateTime.now());
 
-        // Usuario para Restaurante
-        Usuario usuarioRestaurante = new Usuario();
-        usuarioRestaurante.setNombre("Administrador Restaurante");
-        usuarioRestaurante.setEmail("admin@restaurante.com");
-        usuarioRestaurante.setPassword(passwordEncoder.encode("resto123"));
-        usuarioRestaurante.setFechaVerificacionCorreo(LocalDateTime.now());
+        // Usuario 2 para Demo Enterprise
+        Usuario usuarioAdmin = new Usuario();
+        usuarioAdmin.setNombre("Administrador Demo Enterprise");
+        usuarioAdmin.setEmail("admin@demo.com");
+        usuarioAdmin.setPassword(passwordEncoder.encode("resto123"));
+        usuarioAdmin.setFechaVerificacionCorreo(LocalDateTime.now());
 
-        // Usuario para Comercial
-        Usuario usuarioComercial = new Usuario();
-        usuarioComercial.setNombre("Supervisor Comercial");
-        usuarioComercial.setEmail("supervisor@comercial.com");
-        usuarioComercial.setPassword(passwordEncoder.encode("comercial123"));
-        usuarioComercial.setFechaVerificacionCorreo(LocalDateTime.now());
+        // Usuario para   Demo Enterprise
+        Usuario usuarioNormal = new Usuario();
+        usuarioNormal.setNombre("Supervisor Demo Enterprise");
+        usuarioNormal.setEmail("supervisor@demo.com");
+        usuarioNormal.setPassword(passwordEncoder.encode("comercial123"));
+        usuarioNormal.setFechaVerificacionCorreo(LocalDateTime.now());
 
-        usuarioRepository.save(usuarioTech);
-        usuarioRepository.save(usuarioRestaurante);
-        usuarioRepository.save(usuarioComercial);
+        usuarioRepository.save(usuarioGerente);
+        usuarioRepository.save(usuarioAdmin);
+        usuarioRepository.save(usuarioNormal);
 
         log.info("[MultiTenantDataLoader] Usuarios tenant creados:");
-        log.info("  - Tech: {} ({})", usuarioTech.getNombre(), usuarioTech.getEmail());
-        log.info("  - Restaurante: {} ({})", usuarioRestaurante.getNombre(), usuarioRestaurante.getEmail());
-        log.info("  - Comercial: {} ({})", usuarioComercial.getNombre(), usuarioComercial.getEmail());
-        
+        log.info("  - Gerente: {} ({})", usuarioGerente.getNombre(), usuarioGerente.getEmail());
+        log.info("  - Administrador: {} ({})", usuarioAdmin.getNombre(), usuarioAdmin.getEmail());
+        log.info("  - Supervisor: {} ({})", usuarioNormal.getNombre(), usuarioNormal.getEmail());
+
         log.warn("[MultiTenantDataLoader] === CREDENCIALES DE PRUEBA ===");
-        log.warn("  - tech123, resto123, comercial123");
-        log.warn("  - CAMBIAR EN PRODUCCIÓN");
+        log.warn("  - gerente123, admin123, supervisor123");
     }
 }

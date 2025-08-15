@@ -9,8 +9,8 @@ import java.util.List;
 
 @Service
 public class EmpresaService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EmpresaService.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(EmpresaService.class);
 
     private final EmpresaRepository empresaRepository;
 
@@ -19,7 +19,7 @@ public class EmpresaService {
     }
 
     public List<Empresa> listarEmpresas() {
-    	logger.info("[API] -> [Service] -> [Empresa] -> Listando todas las empresas");
+        logger.info("[API] -> [Service] -> [Empresa] -> Listando todas las empresas");
         return empresaRepository.findAll();
     }
 }
