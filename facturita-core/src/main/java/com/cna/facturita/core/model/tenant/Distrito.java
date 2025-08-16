@@ -1,5 +1,7 @@
 package com.cna.facturita.core.model.tenant;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,9 @@ public class Distrito {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provincia_id", referencedColumnName = "id", nullable = false)
     private Provincia provincia;
+
+    @OneToMany(mappedBy = "provincia", fetch = FetchType.LAZY)
+    private List<Distrito> distritos;
 
     @Column(nullable = false, length = 255)
     private String nombre;

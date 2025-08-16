@@ -24,6 +24,7 @@ public record ClienteDTO(
     @JsonProperty("pais") Pais pais,
     @JsonProperty("email") String email,
     @JsonProperty("telefono") String telefono,
+    @JsonProperty("condicion") Boolean condicion,
     @JsonProperty("estado") Boolean estado,
     @JsonProperty("fecha_actualizacion") LocalDateTime fechaActualizacion
 ) {
@@ -44,6 +45,7 @@ public record ClienteDTO(
             cliente.getPais(),
             cliente.getEmail(),
             cliente.getTelefono(),
+            cliente.isCondicion(),
             cliente.isEstado(),
             cliente.getFechaActualizacion()
         );

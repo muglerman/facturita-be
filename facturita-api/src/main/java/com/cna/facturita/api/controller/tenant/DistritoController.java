@@ -27,7 +27,7 @@ public class DistritoController {
         return distrito.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /* @PostMapping
     public Distrito save(@RequestBody Distrito distrito) {
         return distritoService.save(distrito);
     }
@@ -36,5 +36,5 @@ public class DistritoController {
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         distritoService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
+    } */
 }

@@ -27,7 +27,7 @@ public class DepartamentoController {
         return departamento.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /* @PostMapping
     public Departamento save(@RequestBody Departamento departamento) {
         return departamentoService.save(departamento);
     }
@@ -35,6 +35,6 @@ public class DepartamentoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         departamentoService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+        return ResponseEntity.noContent().build(); 
+    }*/
 }

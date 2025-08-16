@@ -23,6 +23,7 @@ public record ClienteForm(
     Pais pais,
     String email,
     String telefono,
+    Boolean condicion,
     Boolean estado,
     LocalDateTime fechaActualizacion
 ) {
@@ -36,5 +37,6 @@ public record ClienteForm(
         cliente.setEmail(email);
         cliente.setTelefono(telefono);
         cliente.setEstado(estado);
+        cliente.setCondicion(condicion);
     }
 }

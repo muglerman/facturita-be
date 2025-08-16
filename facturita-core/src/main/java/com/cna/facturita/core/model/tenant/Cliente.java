@@ -43,10 +43,13 @@ public class Cliente {
     @Column(length = 255)
     private String direccion;
 
+    @Column(nullable = true)
+    private boolean condicion; 
+
     @Column(nullable = false)
     private boolean estado;
 
-    @Column(unique = true, length = 255)
+    @Column(unique = true, length = 255,nullable = true)
     private String email;
 
     @Column(length = 255)

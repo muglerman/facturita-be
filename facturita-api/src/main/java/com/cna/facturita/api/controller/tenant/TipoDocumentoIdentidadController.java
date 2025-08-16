@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/tenant/tipo-documento-identidad")
+@RequestMapping("/api/tipo-documento-identidad")
 public class TipoDocumentoIdentidadController {
     private final TipoDocumentoIdentidadService tipoDocumentoIdentidadService;
 
@@ -27,7 +27,7 @@ public class TipoDocumentoIdentidadController {
         return tipo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /* @PostMapping
     public TipoDocumentoIdentidad save(@RequestBody TipoDocumentoIdentidad tipo) {
         return tipoDocumentoIdentidadService.save(tipo);
     }
@@ -36,5 +36,5 @@ public class TipoDocumentoIdentidadController {
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         tipoDocumentoIdentidadService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
+    } */
 }

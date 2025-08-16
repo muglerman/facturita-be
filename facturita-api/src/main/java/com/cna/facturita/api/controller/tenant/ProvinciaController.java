@@ -27,7 +27,7 @@ public class ProvinciaController {
         return provincia.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /* @PostMapping
     public Provincia save(@RequestBody Provincia provincia) {
         return provinciaService.save(provincia);
     }
@@ -36,5 +36,5 @@ public class ProvinciaController {
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         provinciaService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
+    } */
 }

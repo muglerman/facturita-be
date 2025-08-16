@@ -27,7 +27,7 @@ public class PaisController {
         return pais.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /* @PostMapping
     public Pais save(@RequestBody Pais pais) {
         return paisService.save(pais);
     }
@@ -36,5 +36,5 @@ public class PaisController {
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         paisService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
+    } */
 }
