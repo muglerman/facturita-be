@@ -24,7 +24,7 @@ facturita:
   multitenant:
     enabled: true
     strategy: SCHEMA  # o DATABASE
-    default-tenant: admin
+    default-tenant: cna
 # CORS para desarrollo
 #setAllowedOriginPatterns
   cors:

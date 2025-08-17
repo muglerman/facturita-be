@@ -2,12 +2,12 @@ package com.cna.facturita.multitenant.filter;
 
 import com.cna.facturita.multitenant.context.TenantContext;
 import com.cna.facturita.multitenant.resolver.SubdomainTenantResolver;
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.lang.NonNull;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.core.Ordered;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,27 +19,31 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-public class TenantFilter implements Filter {
+public class TenantFilter extends OncePerRequestFilter implements Ordered {
+    @Override
+    public int getOrder() {
+        return Ordered.LOWEST_PRECEDENCE;
+    }
     @Autowired
     private SubdomainTenantResolver tenantResolver;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String tenant = httpRequest.getHeader("x-tenant");
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull jakarta.servlet.http.HttpServletResponse response, @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+        String tenant = request.getHeader("x-tenant");
         if (tenant == null || tenant.isEmpty()) {
-            tenant = tenantResolver.resolveTenant(httpRequest);
+            tenant = tenantResolver.resolveTenant(request);
         }
 
-        log.debug("[TenantFilter] Host: {}, Tenant resuelto: {}", httpRequest.getServerName(), tenant);
-
+        log.debug("[TenantFilter] Host: {}, Tenant resuelto: {}", request.getServerName(), tenant);
+        log.debug("[TenantFilter] Asignando tenant al contexto: {}", tenant);
         TenantContext.setCurrentTenant(tenant);
         try {
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
         } finally {
+            log.debug("[TenantFilter] Limpiando contexto de tenant. Valor actual: {}", TenantContext.getCurrentTenant());
             TenantContext.clear();
+            log.debug("[TenantFilter] Contexto de tenant limpiado.");
         }
     }
 }

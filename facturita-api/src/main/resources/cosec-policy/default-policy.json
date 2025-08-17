@@ -1,0 +1,25 @@
+{
+    "id": "user-policy",
+    "name": "User self-access",
+    "type": "global",
+    "tenantId": "tenant1",
+    "condition": {
+        "bool": {
+            "and": [
+                {
+                    "authenticated": {}
+                }
+            ]
+        }
+    },
+    "statements": [
+        {
+            "action": {
+                "path": {
+                    "pattern": "/user/#{principal.id}/*"
+                }
+            },
+            "effect": "allow"
+        }
+    ]
+}

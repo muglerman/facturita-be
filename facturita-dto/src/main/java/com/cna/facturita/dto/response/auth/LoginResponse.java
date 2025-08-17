@@ -1,6 +1,7 @@
 package com.cna.facturita.dto.response.auth;
 
 import com.cna.facturita.dto.UsuarioDTO;
+import com.cna.facturita.dto.tenant.UsuarioTenantDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,12 @@ public class LoginResponse {
      */
     @Schema(description = "Información del usuario autenticado")
     private UsuarioDTO user;
+
+    /**
+     * Información del usuario autenticado.
+     */
+    @Schema(description = "Información del usuario autenticado")
+    private UsuarioTenantDTO userTenant;
 
     /**
      * Token de acceso JWT generado tras la autenticación.

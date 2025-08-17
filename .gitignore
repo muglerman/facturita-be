@@ -1,8 +1,45 @@
 HELP.md
+sb3-s6/
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# Archivos y carpetas sensibles o generados que no deben subirse al repo
+.env
+application-local.yml
+application-dev.yml
+application-prod.yml
+*.log
+*.tmp
+*.bak
+.DS_Store
+*.swp
+*.swo
+.classpath
+.project
+.settings/
+.idea/
+.vscode/
+node_modules/
+build/
+out/
+.cache/
+.coverage/
+.test/
+.history/
+.gradle/
+*.db
+*.sqlite
+*.h2.db
+*.mv.db
+*.der
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+secret*
 
 ### STS ###
 .apt_generated
@@ -33,3 +70,5 @@ build/
 .vscode/
 .idea/
 .settings/
+
+.sb3-s6/

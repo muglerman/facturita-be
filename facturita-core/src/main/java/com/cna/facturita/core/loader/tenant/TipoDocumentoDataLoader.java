@@ -4,13 +4,10 @@ import com.cna.facturita.core.model.tenant.TipoDocumentoIdentidad;
 import com.cna.facturita.core.repository.tenant.TipoDocumentoIdentidadRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(7)
-public class TipoDocumentoDataLoader implements CommandLineRunner {
+public class TipoDocumentoDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(TipoDocumentoDataLoader.class);
 
@@ -20,8 +17,7 @@ public class TipoDocumentoDataLoader implements CommandLineRunner {
         this.tipoDocumentoRepository = tipoDocumentoRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Tipos de Documento ===");
 
         if (tipoDocumentoRepository.count() > 0) {
@@ -52,6 +48,6 @@ public class TipoDocumentoDataLoader implements CommandLineRunner {
             log.info("✓ TipoDocumento creado: {} - {} - {}", tipo.getId(), tipo.isEstado(), tipo.getNombre());
         }
 
-        log.info("Tipos de documento de demostración creados exitosamente. Total: {}", data.length);
+        log.info("Tipos de documento de demostración creados exitosamente. Total: {}", tipoDocumentoRepository.count());
     }
 }

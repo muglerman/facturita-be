@@ -6,19 +6,13 @@ import com.cna.facturita.core.repository.tenant.DepartamentoRepository;
 import com.cna.facturita.core.repository.tenant.ProvinciaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Carga datos de demostración para provincias.
- * Se ejecuta después de los loaders principales.
- */
 @Component
-@Order(5)
-public class ProvinciaDataLoader implements CommandLineRunner {
+public class ProvinciaDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(ProvinciaDataLoader.class);
 
@@ -30,8 +24,7 @@ public class ProvinciaDataLoader implements CommandLineRunner {
         this.departamentoRepository = departamentoRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Provincias ===");
 
         if (provinciaRepository.count() > 0) {
@@ -256,6 +249,6 @@ public class ProvinciaDataLoader implements CommandLineRunner {
             }
         }
 
-        log.info("Provincias de demostración creadas exitosamente. Total: {}", provincias.size());
+        log.info("Provincias de demostración creadas exitosamente. Total: {}", provinciaRepository.count());
     }
 }

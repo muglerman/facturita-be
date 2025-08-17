@@ -6,8 +6,8 @@ import com.cna.facturita.core.model.tenant.Distrito;
 import com.cna.facturita.core.model.tenant.Pais;
 import com.cna.facturita.core.model.tenant.TipoDocumentoIdentidad;
 import com.cna.facturita.dto.validation.tenant.ConditionalClienteValidation;
-import jakarta.validation.constraints.*;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Record para la transferencia de datos de cliente entre capas.
@@ -23,9 +23,9 @@ public record ClienteForm(
     Pais pais,
     String email,
     String telefono,
-    Boolean condicion,
-    Boolean estado,
-    LocalDateTime fechaActualizacion
+    String condicionSunat,
+    String estadoSunat,
+    boolean estado
 ) {
     public void applyTo(Cliente cliente) {
         cliente.setTipoDocumentoIdentidad(tipoDocumentoIdentidad);
@@ -37,6 +37,7 @@ public record ClienteForm(
         cliente.setEmail(email);
         cliente.setTelefono(telefono);
         cliente.setEstado(estado);
-        cliente.setCondicion(condicion);
+        cliente.setCondicionSunat(condicionSunat);
+        cliente.setEstadoSunat(estadoSunat);
     }
 }

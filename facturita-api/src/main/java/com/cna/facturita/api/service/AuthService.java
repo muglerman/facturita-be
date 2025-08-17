@@ -4,11 +4,15 @@ import com.cna.facturita.api.exception.AuthenticationException;
 import com.cna.facturita.dto.UsuarioDTO;
 import com.cna.facturita.dto.request.auth.LoginRequest;
 import com.cna.facturita.dto.response.auth.LoginResponse;
+import com.cna.facturita.dto.tenant.UsuarioTenantDTO;
+import com.cna.facturita.multitenant.context.TenantContext;
 import com.cna.facturita.core.model.Usuario;
+import com.cna.facturita.core.model.tenant.UsuarioTenant;
 import com.cna.facturita.core.repository.UsuarioRepository;
+import com.cna.facturita.core.repository.tenant.UsuarioRepositoryTenant;
 import com.cna.facturita.security.service.JwtService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,31 +30,48 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    @Qualifier("UsuarioRepository")
     private final UsuarioRepository usuarioRepository;
+    @Qualifier("UsuarioRepositoryTenant")
+    private final UsuarioRepositoryTenant usuarioRepositoryTenant;
 
     public LoginResponse login(LoginRequest request) throws AuthenticationException {
         logger.info("[AuthService]  -> [LoginResponse]: Ejecutando authenticate()...");
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
             logger.info("[AuthService] -> [LoginResponse]: Asignado a userDetails");
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            // Obtener el usuario de la base de datos
-            Usuario usuario = usuarioRepository.findByEmail(userDetails.getUsername())
-                    .orElseThrow(() -> new AuthenticationException("Usuario no encontrado"));
-
-            // Generar token
-            String token = jwtService.generateToken(userDetails.getUsername());
-
-            // Construir respuesta completa
-            return LoginResponse.builder()
-                    .user(UsuarioDTO.fromEntity(usuario))
-                    .token(token)
-                    .refreshToken(null) // Por ahora no implementamos refresh token
-                    .expiresIn(jwtService.getExpirationInSeconds())
-                    .build();
+            // Seleccionar repositorio según el tenant
+            Usuario usuario;
+            UsuarioTenant usuarioTenant;
+            String currentTenant = TenantContext.getCurrentTenant();
+            logger.info("[AuthService] -> Tenant actual: {}", currentTenant);
+            if (currentTenant == null || currentTenant.equalsIgnoreCase("default")
+                    || currentTenant.equalsIgnoreCase("cna")) {
+                usuario = usuarioRepository.findByEmail(userDetails.getUsername())
+                        .orElseThrow(() -> new AuthenticationException("Usuario no encontrado"));
+                // Generar token
+                String token = jwtService.generateToken(userDetails.getUsername());
+                return LoginResponse.builder()
+                        .user(UsuarioDTO.fromEntity(usuario))
+                        .token(token)
+                        .refreshToken(null) // Por ahora no implementamos refresh token
+                        .expiresIn(jwtService.getExpirationInSeconds())
+                        .build();
+            } else {
+                usuarioTenant = usuarioRepositoryTenant.findByEmail(userDetails.getUsername())
+                        .orElseThrow(() -> new AuthenticationException("Usuario no encontrado en tenant"));
+                // Construir respuesta completa
+                String token = jwtService.generateToken(userDetails.getUsername());
+                return LoginResponse.builder()
+                        .userTenant(UsuarioTenantDTO.fromEntity(usuarioTenant))
+                        .token(token)
+                        .refreshToken(null) // Por ahora no implementamos refresh token
+                        .expiresIn(jwtService.getExpirationInSeconds())
+                        .build();
+            }
 
         } catch (BadCredentialsException e) {
             logger.error("[AuthService] -> Credenciales inválidas para el usuario: {}", request.getEmail());

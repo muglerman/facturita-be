@@ -22,11 +22,11 @@ public class TipoDocumentoIdentidadService {
         return tipoDocumentoIdentidadRepository.findById(id);
     }
 
-    public TipoDocumentoIdentidad save(TipoDocumentoIdentidad tipoDocumentoIdentidad) {
+    /* public TipoDocumentoIdentidad save(TipoDocumentoIdentidad tipoDocumentoIdentidad) {
         return tipoDocumentoIdentidadRepository.save(tipoDocumentoIdentidad);
     }
 
     public void deleteById(String id) {
         tipoDocumentoIdentidadRepository.deleteById(id);
-    }
+    } */
 }

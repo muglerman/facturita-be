@@ -6,20 +6,13 @@ import com.cna.facturita.core.repository.tenant.DistritoRepository;
 import com.cna.facturita.core.repository.tenant.ProvinciaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Carga datos de demostración para distritos.
- * Se ejecuta después de los loaders principales.
- */
 @Component
-@Order(6)
-public class DistritoDataLoader implements CommandLineRunner {
+public class DistritoDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(DistritoDataLoader.class);
 
@@ -31,8 +24,7 @@ public class DistritoDataLoader implements CommandLineRunner {
         this.provinciaRepository = provinciaRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Distritos ===");
 
         if (distritoRepository.count() > 0) {
@@ -946,6 +938,6 @@ public class DistritoDataLoader implements CommandLineRunner {
             }
         }
 
-        log.info("Distritos de demostración creados exitosamente. Total: {}", distritos.size());
+        log.info("Distritos de demostración creados exitosamente. Total: {}", distritoRepository.count());
     }
 }

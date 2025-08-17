@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,8 +15,7 @@ import org.springframework.stereotype.Component;
  * datos esté configurada.
  */
 @Component
-@Order(3)
-public class ConfiguracionDataLoader implements CommandLineRunner {
+public class ConfiguracionDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(ConfiguracionDataLoader.class);
     private final ConfiguracionRepository configuracionRepository;
@@ -27,8 +24,7 @@ public class ConfiguracionDataLoader implements CommandLineRunner {
         this.configuracionRepository = configuracionRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Configuraciones ===");
         try {
             crearConfiguracionesDemo();

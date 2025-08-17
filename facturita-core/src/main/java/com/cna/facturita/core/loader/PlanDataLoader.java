@@ -4,8 +4,6 @@ import com.cna.facturita.core.model.Plan;
 import com.cna.facturita.core.repository.PlanRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,8 +16,7 @@ import java.util.List;
  * esté configurada.
  */
 @Component
-@Order(2) // Se ejecuta después del DataLoader básico (Order 1)
-public class PlanDataLoader implements CommandLineRunner {
+public class PlanDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(PlanDataLoader.class);
 
@@ -29,8 +26,7 @@ public class PlanDataLoader implements CommandLineRunner {
         this.planRepository = planRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Planes ===");
 
         try {

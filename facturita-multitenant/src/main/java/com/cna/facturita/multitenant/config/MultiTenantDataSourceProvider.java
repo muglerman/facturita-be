@@ -41,6 +41,15 @@ public class MultiTenantDataSourceProvider {
         String tenant = TenantContext.getCurrentTenant();
         return getDataSource(tenant);
     }
+    /**
+     * Obtiene cualquier DataSource disponible (por ejemplo, el primero configurado)
+     */
+    public DataSource getAnyDataSource() {
+        if (dataSources.isEmpty()) {
+            throw new IllegalStateException("No hay DataSources configurados");
+        }
+        return dataSources.values().iterator().next();
+    }
     
     /**
      * Obtiene el DataSource para un tenant específico

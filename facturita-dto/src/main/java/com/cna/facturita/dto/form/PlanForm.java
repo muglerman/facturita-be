@@ -2,17 +2,12 @@ package com.cna.facturita.dto.form;
 
 import com.cna.facturita.core.model.Plan;
 import com.cna.facturita.dto.validation.ConditionalPlanValidation;
-
-import jakarta.validation.constraints.*;
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.List;
-
-@Getter
-@Setter
 
 /**
  * Formulario DTO para la creación y edición de planes.
@@ -33,6 +28,8 @@ import java.util.List;
  * @author Equipo Facturita
  * @since 2025
  */
+@Getter
+@Setter
 @ConditionalPlanValidation
 public class PlanForm {
 

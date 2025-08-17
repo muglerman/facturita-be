@@ -42,18 +42,18 @@ public class Usuario implements Serializable {
     @Column(name = "recordar_token")
     private String recordarToken;
 
-    @Column(name = "fecha_de_creacion")
-    private LocalDateTime fechaDeCreacion;
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
 
-    @Column(name = "fecha_de_actualizacion")
-    private LocalDateTime fechaDeActualizacion;
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
 
     /**
      * Asigna la fecha de creación y registra el evento.
      */
     @PrePersist
     public void prePersist() {
-        fechaDeCreacion = LocalDateTime.now();
+        fechaCreacion = LocalDateTime.now();
         log.info("Creando Usuario: nombre='{}', correo='{}'", nombre, email);
     }
 
@@ -62,7 +62,7 @@ public class Usuario implements Serializable {
      */
     @PreUpdate
     public void preUpdate() {
-        fechaDeActualizacion = LocalDateTime.now();
+        fechaActualizacion = LocalDateTime.now();
         log.info("Actualizando Usuario: id={}, nombre='{}'", id, nombre);
     }
 

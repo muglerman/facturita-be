@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "clientes")
+@Entity(name = "t_clientes")
+@Table(name = "t_clientes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,8 +43,11 @@ public class Cliente {
     @Column(length = 255)
     private String direccion;
 
-    @Column(nullable = true)
-    private boolean condicion; 
+    @Column(name="condicion_sunat",nullable = true)
+    private String condicionSunat;
+
+    @Column(name="estado_sunat",nullable = true)
+    private String estadoSunat;
 
     @Column(nullable = false)
     private boolean estado;

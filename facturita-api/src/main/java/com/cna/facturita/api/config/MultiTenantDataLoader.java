@@ -1,15 +1,26 @@
 package com.cna.facturita.api.config;
 
-import com.cna.facturita.core.model.Usuario;
-// import com.cna.facturita.core.model.Empresa;
-import com.cna.facturita.core.repository.UsuarioRepository;
+
+import com.cna.facturita.core.loader.tenant.ClienteDataLoader;
+import com.cna.facturita.core.loader.tenant.DepartamentoDataLoader;
+import com.cna.facturita.core.loader.tenant.DistritoDataLoader;
+import com.cna.facturita.core.loader.tenant.PaisDataLoader;
+import com.cna.facturita.core.loader.tenant.ProvinciaDataLoader;
+import com.cna.facturita.core.loader.tenant.TipoDocumentoDataLoader;
+import com.cna.facturita.core.loader.tenant.UsuarioDataLoader;
+//import com.cna.facturita.core.loader.tenant.C
+import com.cna.facturita.multitenant.context.TenantContext;
+
 // import com.cna.facturita.core.repository.EmpresaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
+import java.nio.file.Files;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 /**
  * Carga datos iniciales específicos para multitenant.
@@ -20,96 +31,57 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class MultiTenantDataLoader {
 
-    private final UsuarioRepository usuarioRepository;
-    // Comentamos temporalmente EmpresaRepository para evitar problemas de dependencias
-    // private final EmpresaRepository empresaRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    
-
-    /**
-     * Crea empresas de demostración para testing multitenant
-     * TEMPORALMENTE DESHABILITADO - problemas con dependencias
-     */
-    /*
-    private void crearEmpresasDemostracion() {
-        if (empresaRepository.count() > 0) {
-            log.info("[MultiTenantDataLoader] Ya existen empresas. Omitiendo creación de demos.");
-            return;
-        }
-
-        log.info("[MultiTenantDataLoader] Creando empresas de demostración...");
-        
-        // Empresa 1: Tecnología
-        Empresa empresaDemo1 = new Empresa();
-        empresaDemo1.setRuc("20123456789");
-        empresaDemo1.setRazonSocial("Tech Solutions S.A.C.");
-        
-        // Empresa 2: Restaurante
-        Empresa empresaDemo2 = new Empresa();
-        empresaDemo2.setRuc("20987654321");
-        empresaDemo2.setRazonSocial("Restaurante El Buen Sabor E.I.R.L.");
-        
-        // Empresa 3: Comercio
-        Empresa empresaDemo3 = new Empresa();
-        empresaDemo3.setRuc("20456789123");
-        empresaDemo3.setRazonSocial("Comercial Los Andes S.R.L.");
-        
-        empresaRepository.save(empresaDemo1);
-        empresaRepository.save(empresaDemo2);
-        empresaRepository.save(empresaDemo3);
-        
-        log.info("[MultiTenantDataLoader] Empresas demo creadas:");
-        log.info("  - Empresa 1: {} (RUC: {})", empresaDemo1.getRazonSocial(), empresaDemo1.getRuc());
-        log.info("  - Empresa 2: {} (RUC: {})", empresaDemo2.getRazonSocial(), empresaDemo2.getRuc());
-        log.info("  - Empresa 3: {} (RUC: {})", empresaDemo3.getRazonSocial(), empresaDemo3.getRuc());
-    }
-    */
+    private final ClienteDataLoader clienteDataLoader;
+    private final DepartamentoDataLoader departamentoDataLoader;
+    private final DistritoDataLoader distritoDataLoader;
+    private final PaisDataLoader paisDataLoader;
+    private final ProvinciaDataLoader provinciaDataLoader;
+    private final TipoDocumentoDataLoader tipoDocumentoDataLoader;
+    private final UsuarioDataLoader usuarioDataLoader;
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * Crea usuarios específicos para cada tenant/empresa
      */
-    private void cargarDatosDemo() {
-        // Solo crear si no hay usuarios tenant específicos
-        long usuariosExistentes = usuarioRepository.count();
-        if (usuariosExistentes > 1) { // Más que solo el admin
-            log.info("[MultiTenantDataLoader] Ya existen usuarios tenant. Omitiendo creación.");
-            return;
+    public void cargaInicialTenant() {
+    log.info("[MultiTenantDataLoader] Iniciando carga de datos iniciales para tenants...");
+    log.info("[MultiTenantDataLoader] Esquema actual: {}", TenantContext.getCurrentTenant());
+
+    // Ejecutar DDL dinámico para el esquema actual
+    ejecutarScriptDDL("db/ddl/schema_tenant.sql", TenantContext.getCurrentTenant());
+
+    // Cambiar el search_path al esquema del tenant
+    String setSearchPath = String.format("SET search_path TO %s;", TenantContext.getCurrentTenant());
+    log.info("[MultiTenantDataLoader] Ejecutando: {}", setSearchPath);
+    jdbcTemplate.execute(setSearchPath);
+
+    tipoDocumentoDataLoader.cargaInicial();
+    departamentoDataLoader.cargaInicial();
+    provinciaDataLoader.cargaInicial();
+    distritoDataLoader.cargaInicial();
+    paisDataLoader.cargaInicial();
+    clienteDataLoader.cargaInicial();
+    usuarioDataLoader.cargaInicial();
+
+    log.info("[MultiTenantDataLoader] Carga de datos iniciales para tenants completada.");
+    }
+
+    private void ejecutarScriptDDL(String scriptPath, String tenantName) {
+        try {
+            log.info("[MultiTenantDataLoader] DDL ejecutando para tenant: {}", tenantName);
+            String sql = Files.lines(new ClassPathResource(scriptPath).getFile().toPath())
+                .collect(Collectors.joining("\n"))
+                .replace("${tenant}", tenantName);
+            log.info("[MultiTenantDataLoader] SQL generado para tenant {}:\n{}", tenantName, sql);
+            for (String statement : sql.split(";")) {
+                if (!statement.trim().isEmpty()) {
+                    log.info("[MultiTenantDataLoader] Ejecutando statement:\n{}", statement);
+                    jdbcTemplate.execute(statement);
+                }
+            }
+            log.info("[MultiTenantDataLoader] DDL ejecutado para tenant: {}", tenantName);
+        } catch (Exception e) {
+            log.error("[MultiTenantDataLoader] Error ejecutando DDL para tenant {}: {}", tenantName, e.getMessage());
         }
-
-        log.info("[MultiTenantDataLoader] Creando usuarios por tenant...");
-
-        // Usuario para Demo Enterprise
-        Usuario usuarioGerente = new Usuario();
-        usuarioGerente.setNombre("Gerente Demo  Enterprise");
-        usuarioGerente.setEmail("gerente@demo.com");
-        usuarioGerente.setPassword(passwordEncoder.encode("demo123"));
-        usuarioGerente.setFechaVerificacionCorreo(LocalDateTime.now());
-
-        // Usuario 2 para Demo Enterprise
-        Usuario usuarioAdmin = new Usuario();
-        usuarioAdmin.setNombre("Administrador Demo Enterprise");
-        usuarioAdmin.setEmail("admin@demo.com");
-        usuarioAdmin.setPassword(passwordEncoder.encode("resto123"));
-        usuarioAdmin.setFechaVerificacionCorreo(LocalDateTime.now());
-
-        // Usuario para   Demo Enterprise
-        Usuario usuarioNormal = new Usuario();
-        usuarioNormal.setNombre("Supervisor Demo Enterprise");
-        usuarioNormal.setEmail("supervisor@demo.com");
-        usuarioNormal.setPassword(passwordEncoder.encode("comercial123"));
-        usuarioNormal.setFechaVerificacionCorreo(LocalDateTime.now());
-
-        usuarioRepository.save(usuarioGerente);
-        usuarioRepository.save(usuarioAdmin);
-        usuarioRepository.save(usuarioNormal);
-
-        log.info("[MultiTenantDataLoader] Usuarios tenant creados:");
-        log.info("  - Gerente: {} ({})", usuarioGerente.getNombre(), usuarioGerente.getEmail());
-        log.info("  - Administrador: {} ({})", usuarioAdmin.getNombre(), usuarioAdmin.getEmail());
-        log.info("  - Supervisor: {} ({})", usuarioNormal.getNombre(), usuarioNormal.getEmail());
-
-        log.warn("[MultiTenantDataLoader] === CREDENCIALES DE PRUEBA ===");
-        log.warn("  - gerente123, admin123, supervisor123");
     }
 }

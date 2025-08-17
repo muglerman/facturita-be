@@ -4,20 +4,13 @@ import com.cna.facturita.core.model.tenant.Pais;
 import com.cna.facturita.core.repository.tenant.PaisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Carga datos de demostración para países.
- * Se ejecuta después de los loaders principales.
- */
 @Component
-@Order(4)
-public class PaisDataLoader implements CommandLineRunner {
+public class PaisDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(PaisDataLoader.class);
 
@@ -27,8 +20,7 @@ public class PaisDataLoader implements CommandLineRunner {
         this.paisRepository = paisRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void cargaInicial() {
         log.info("=== Iniciando carga de datos demo para Países ===");
 
         if (paisRepository.count() > 0) {
@@ -288,6 +280,6 @@ public class PaisDataLoader implements CommandLineRunner {
             }
         }
 
-        log.info("Países de demostración creados exitosamente. Total: {}", paises.size());
+        log.info("Países de demostración creados exitosamente. Total: {}", paisRepository.count());
     }
 }

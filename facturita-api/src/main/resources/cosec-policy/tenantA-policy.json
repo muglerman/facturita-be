@@ -1,0 +1,24 @@
+{
+    "id": "tenantA-user-policy",
+    "type": "global",
+    "tenantId": "tenantA",
+    "condition": {
+        "bool": {
+            "and": [
+                {
+                    "authenticated": {}
+                }
+            ]
+        }
+    },
+    "statements": [
+        {
+            "action": {
+                "path": {
+                    "pattern": "/api/tenantA/user/#{principal.id}/*"
+                }
+            },
+            "effect": "allow"
+        }
+    ]
+}

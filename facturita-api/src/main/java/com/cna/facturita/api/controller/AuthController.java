@@ -10,6 +10,8 @@ import com.cna.facturita.core.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,12 +29,15 @@ import java.util.HashMap;
 public class AuthController {
 
     private final AuthService authService;
+    @Qualifier("UsuarioRepository")
     private final UsuarioRepository usuarioRepository;
+    @Qualifier("UsuarioRepositoryTenant")
+    private final UsuarioRepository usuarioRepositoryTenant;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        log.info("[AuthController] -> [login] Ejecutando login...");
+        log.debug("[AuthController] -> [login] Ejecutando login...");
         try {
             LoginResponse response = authService.login(request);
             return ResponseEntity.ok(response);
@@ -59,7 +64,7 @@ public class AuthController {
      */
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@Valid @RequestBody UsuarioForm form) {
-        log.info("[AuthController] -> [registro] Registrando nuevo usuario: {}", form.getEmail());
+        log.debug("[AuthController] -> [registro] Registrando nuevo usuario: {}", form.getEmail());
 
         // Verificar si el email ya existe
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(form.getEmail());
@@ -78,7 +83,7 @@ public class AuthController {
 
         usuarioRepository.save(usuario);
 
-        log.info("[AuthController] -> [registro] Usuario registrado exitosamente: {}", usuario.getEmail());
+        log.debug("[AuthController] -> [registro] Usuario registrado exitosamente: {}", usuario.getEmail());
         return ResponseEntity.ok(new MensajeResponse(true, "Usuario registrado con éxito"));
     }
 
@@ -89,7 +94,7 @@ public class AuthController {
     @GetMapping("/tiene-usuarios")
     public ResponseEntity<?> tieneUsuarios() {
         boolean tieneUsuarios = usuarioRepository.count() > 0;
-        log.info("[AuthController] -> [tieneUsuarios] Sistema tiene usuarios: {}", tieneUsuarios);
+        log.debug("[AuthController] -> [tieneUsuarios] Sistema tiene usuarios: {}", tieneUsuarios);
         return ResponseEntity.ok(new TieneUsuariosResponse(tieneUsuarios));
     }
 

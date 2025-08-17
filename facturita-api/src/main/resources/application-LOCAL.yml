@@ -1,19 +1,23 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/facturita_main?currentSchema=public
+    url: jdbc:postgresql://localhost:5432/facturita_main?currentSchema=cna
     username: muglerman
     password:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     properties:
       hibernate:
+        multiTenancy: cna
+        '[tenant_identifier_resolver]': com.cna.facturita.multitenant.resolver.HibernateTenantIdentifierResolver
+        '[multi_tenant_connection_provider]': com.cna.facturita.multitenant.config.MultiTenantConnectionProviderImpl
         format-sql: true
         default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
   devtools:
     restart:
@@ -22,13 +26,25 @@ spring:
       enabled: true
 
 logging:
+  file:
+    name: spring.cna.log
   level:
     root: INFO
     '[org.hibernate.SQL]': DEBUG
     '[org.hibernate.type.descriptor.sql]': TRACE
     '[org.springframework.web]': DEBUG
     '[com.cna.facturita]': DEBUG
+    '[com.cna.facturita.multitenant.interceptor.TenantInterceptor]': DEBUG
 
+flyway:
+  enabled: true
+  locations: classpath:db/migration
+
+  cosec:
+    authorization:
+      local-policy-enabled: true
 jwt:
+  header: Authorization
+  prefix: Bearer
   secret: miSuperClaveJwtConMuchoTextoYCaracteresSeguros123!@#
   expiration: 3600000

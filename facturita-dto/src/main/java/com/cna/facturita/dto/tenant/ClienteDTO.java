@@ -5,15 +5,16 @@ import com.cna.facturita.core.model.tenant.Cliente;
 import com.cna.facturita.core.model.tenant.Distrito;
 import com.cna.facturita.core.model.tenant.Pais;
 import com.cna.facturita.core.model.tenant.TipoDocumentoIdentidad;
-import com.cna.facturita.dto.form.tenant.ClienteForm;
-
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Record para la transferencia de datos de cliente entre capas.
  */
+@Builder
 public record ClienteDTO(
     @JsonProperty("id") Integer id,
     @JsonProperty("tipo_documento_identidad") @NotNull(message = "El tipo de documento es obligatorio") TipoDocumentoIdentidad tipoDocumentoIdentidad,
@@ -24,8 +25,9 @@ public record ClienteDTO(
     @JsonProperty("pais") Pais pais,
     @JsonProperty("email") String email,
     @JsonProperty("telefono") String telefono,
-    @JsonProperty("condicion") Boolean condicion,
-    @JsonProperty("estado") Boolean estado,
+    @JsonProperty("condicion_sunat") String condicionSunat,
+    @JsonProperty("estado_sunat") String estadoSunat,
+    @JsonProperty("estado") boolean estado,
     @JsonProperty("fecha_actualizacion") LocalDateTime fechaActualizacion
 ) {
 
@@ -34,20 +36,20 @@ public record ClienteDTO(
      * @param cliente Entidad JPA de cliente
      * @return DTO serializado y listo para enviar como respuesta
      */
-    public static ClienteForm fromEntity(Cliente cliente) {
-        return new ClienteForm(
-            cliente.getId(),
-            cliente.getTipoDocumentoIdentidad(),
-            cliente.getNumero(),
-            cliente.getNombre(),
-            cliente.getDireccion(),
-            cliente.getDistrito(),
-            cliente.getPais(),
-            cliente.getEmail(),
-            cliente.getTelefono(),
-            cliente.isCondicion(),
-            cliente.isEstado(),
-            cliente.getFechaActualizacion()
-        );
+    public static ClienteDTO fromEntity(Cliente cliente) {
+        return ClienteDTO.builder()
+            .id(cliente.getId())
+            .tipoDocumentoIdentidad(cliente.getTipoDocumentoIdentidad())
+            .numeroDocumento(cliente.getNumero())
+            .nombre(cliente.getNombre())
+            .direccion(cliente.getDireccion())
+            .distrito(cliente.getDistrito())
+            .pais(cliente.getPais())
+            .email(cliente.getEmail())
+            .telefono(cliente.getTelefono())
+            .condicionSunat(cliente.getCondicionSunat())
+            .estadoSunat(cliente.getEstadoSunat())
+            .estado(cliente.isEstado())
+            .build();
     }
 }

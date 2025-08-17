@@ -47,9 +47,6 @@ public record UsuarioDTO(
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
                 .email(usuario.getEmail())
-                .fechaVerificacionCorreo(usuario.getFechaVerificacionCorreo())
-                .fechaDeCreacion(usuario.getFechaDeCreacion())
-                .fechaDeActualizacion(usuario.getFechaDeActualizacion())
                 .build();
     }
 }

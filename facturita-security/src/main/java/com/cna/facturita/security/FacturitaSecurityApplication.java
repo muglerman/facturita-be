@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 //	    "com.cna.facturita.security",
 //	    "com.cna.facturita.core"
 //	})
+
 @EnableJpaRepositories(basePackages = "com.cna.facturita.core.repository")
 @EntityScan(basePackages = "com.cna.facturita.core.model")
 public class FacturitaSecurityApplication {
